@@ -5,4 +5,6 @@ const express = require("express");
  app.get("/", (req,res) => res.send("This is the root page!"));
  app.get("/spec", (req,res) => res.send("This is a specific page"));
 
+ app.get("/users",(req,res) => res.send("Hello from the backend"));
+
  app.listen(port, () => console.log(`Example app listening on port ${port}!`));
