@@ -16,22 +16,35 @@ export default class UserData extends Component
     {
         axios.get("/users").then(response =>
         {
-            console.log(response.data);
+            console.log(response);
             this.setState
             ({
-                greeting: response.data
+                greeting: response.data.name
             });
         });
+    };
 
-        
+    handleDeleteButton = () =>
+    {
+        //axios.post
+    };
+
+    handleEditButton = () =>
+    {
+        //axios.post
     };
 
     render()
     {
         return(
             <div>
-                <h1>{this.state.greeting}</h1>
-                <button onClick={this.handleButtonClick}>Get greeting </button>
+                <form>
+                    <input type="text" id="userid" ></input>
+                    <input type="text" id="username" ></input>
+                    <input type="email" id="email" ></input>
+                    <button onClick={this.handleDeleteButton}> Delete </button>
+                    <button onClick={this.handleEditButton}> Edit </button>
+                </form>
             </div>
         );
     }
