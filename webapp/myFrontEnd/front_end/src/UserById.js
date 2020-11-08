@@ -1,5 +1,6 @@
 import React, { Component} from "react";
 import axios from "axios";
+import "./UserById.css";
 
 class UserById extends Component {
 
@@ -29,11 +30,13 @@ class UserById extends Component {
 
     render() {
       return (
-        <div>
+        <div id = "user">
+            <h3>Requested user:  </h3>
+        
             <form>
-                <label type="text" id="userid" >{this.state.id}</label>
-                <label type="text" id="username" >{this.state.name}</label>
-                <label type="email" id="email" >{this.state.email}</label>
+                <label type="text" id="userid" className = "bordered">{this.state.id}</label>
+                <label type="text" id="username" className = "bordered">{this.state.name}</label>
+                <label type="email" id="email" className = "bordered">{this.state.email}</label>
             </form>
         </div>
       )

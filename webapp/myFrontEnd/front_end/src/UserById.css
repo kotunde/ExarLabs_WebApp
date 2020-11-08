@@ -1,0 +1,14 @@
+#user {
+    text-align: center;
+}
+
+h3 {
+    margin-bottom: 40px;
+}
+
+.bordered {
+    border-style: solid;
+    border-width: thin;
+    padding: 1px;
+    margin: 3px; 
+}

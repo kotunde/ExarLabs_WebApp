@@ -1,6 +1,7 @@
 import UserData from "./UserData";
 import React, { Component} from "react";
 import axios from "axios";
+import './UserList.css'
 import { render } from '@testing-library/react';
 
 class UserList extends Component {
@@ -77,35 +78,41 @@ class UserList extends Component {
 
   render() {
     return (
-      <div className="Users">
-        {this.state.users.map(user => {
-          console.log(user.id);
-          return (
-            <UserData
-            key = {user.id}
-            id={user.id}
-            name={user.name}
-            email={user.email} />
-          );
-        })}
-        <div>
-          <h3> Add new user:</h3>
-          <label >Name:</label>
-          <input type="text" id="add_username_id" ></input> <br/>
-          <label >Email:</label>
-          <input type="email" id="add_email_id" ></input> <br/>
-          <button onClick={this.handleAddButton}> Add</button>
-        </div>
-        <div>
-          <h3>Edit user:</h3>
-          <label >Id:</label>
-          <input type="text" id="edit_userid_id" ></input> <br/>
-          <label >Edited name:</label>
-          <input type="text" id="edit_username_id" ></input> <br/>
-          <label >Edited Email:</label>
-          <input type="email" id="edit_email_id" ></input> <br/>
-          <button onClick={this.handleEditButton}> Edit</button>
-        </div>
+      <div>
+          <div id ="userlist">
+            {this.state.users.map(user => {
+            console.log(user.id);
+            return (
+                <UserData
+                key = {user.id}
+                id={user.id}
+                name={user.name}
+                email={user.email} />
+            );
+            })}
+            </div>
+
+            <hr/>
+            <div id= "adduser">
+            <h3> Add new user:</h3>
+            <label >Name : </label>
+            <input type="text" id="add_username_id" className="inputbox" ></input> <br/>
+            <label >Email : </label>
+            <input type="email" id="add_email_id" className="inputbox" ></input> <br/>
+            <button onClick={this.handleAddButton} id = "addbutton"> Add</button>
+            </div>
+
+            <hr/>
+            <div>
+            <h3>Edit user:</h3>
+            <label > ID of user : </label>
+            <input type="text" id="edit_userid_id" className="inputbox" ></input> <br/>
+            <label >Edited name : </label>
+            <input type="text" id="edit_username_id" className="inputbox" ></input> <br/>
+            <label >Edited Email : </label>
+            <input type="email" id="edit_email_id" className="inputbox" ></input> <br/>
+            <button onClick={this.handleEditButton}> Edit</button>
+            </div>
 
       </div>
     );

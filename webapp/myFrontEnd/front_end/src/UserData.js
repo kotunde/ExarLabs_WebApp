@@ -18,7 +18,7 @@ export default class UserData extends Component
     {
         let currentComponent = this;
         axios
-        .delete(`/users/${currentComponent.state.id}`).then(response =>
+        .delete(`users/${currentComponent.state.id}`).then(response =>
             {
                 console.log(response.data);
                 console.log("ok");
@@ -38,9 +38,9 @@ export default class UserData extends Component
         {/* <input type="text" id="userid" >{this.state.id}</input>
         <input type="text" id="username" >{this.state.name}</input>
         <input type="email" id="email" >{this.state.email}</input> */}
-                    <label type="text" id="userid" >{this.state.id}</label>
-                    <label type="text" id="username" >{this.state.name}</label>
-                    <label type="email" id="email" >{this.state.email}</label>
+                    <label type="text" id="userid" className = "bordered" >{this.state.id}</label>
+                    <label type="text" id="username" className = "bordered">{this.state.name}</label>
+                    <label type="email" id="email" className = "bordered">{this.state.email}</label>
                     <button onClick={this.handleDeleteButton}> Delete </button>
                 </form>
             </div>
