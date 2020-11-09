@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 export default class UserData extends Component {
   constructor() {
@@ -12,7 +13,7 @@ export default class UserData extends Component {
           {this.props.id}
         </label>
         <label type="text" id="username" className="bordered">
-          {this.props.name}
+          <Link to={`/users/${this.props.id}`}>{this.props.name}</Link>
         </label>
         <label type="email" id="email" className="bordered">
           {this.props.email}

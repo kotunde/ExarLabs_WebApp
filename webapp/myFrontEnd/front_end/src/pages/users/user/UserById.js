@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 import "./UserById.css";
+import UserService from "../../../api/services/UserService";
+import { Link } from "react-router-dom";
 
 class UserById extends Component {
   constructor() {
@@ -13,27 +15,28 @@ class UserById extends Component {
     };
   }
 
+  handleError = (error) => {
+    this.setState({
+      error: error?.message || "Something went wrong. Try again!",
+    });
+  };
+
   componentDidMount = () => {
-    axios
-      .get(`/users/${this.props.match.params.userId}`)
+    UserService.getById(this.props.match.params.userId)
       .then((response) => {
-        console.log(response.data);
         this.setState({
           id: response.data.id,
           name: response.data.name,
           email: response.data.email,
         });
       })
-      .catch((error) => {
-        this.setState({
-          error: error?.message || "Something went wrong. Try again!",
-        });
-      });
+      .catch(this.handleError);
   };
 
   render() {
     return (
       <div id="user">
+        <Link to="/users">Back</Link>
         <h3>Requested user: </h3>
 
         {this.state.error ? (

@@ -1,13 +1,14 @@
 import UserData from "../../components/users/UserData";
 import React, { Component } from "react";
-import axios from "axios";
+
 import "./UserList.css";
+import UserService from "../../api/services/UserService";
 
 class UserList extends Component {
   constructor() {
     super();
     this.state = {
-      users: [],
+      users: [{ id: "1", name: "arni", email: "tankoarni" }],
       // store the error state through render-cycles
       error: null,
       // edit form states
@@ -30,20 +31,21 @@ class UserList extends Component {
     this.setState({ [key]: value });
   };
 
+  handleError = (error) => {
+    this.setState({
+      error: error?.message || "Something went wrong. Try again!",
+    });
+  };
+
   getUsers = () => {
-    axios
-      .get("/users")
+    UserService.getAll()
       .then((response) => {
         this.setState({
           users: response.data,
           error: null,
         });
       })
-      .catch((error) =>
-        this.setState({
-          error: error?.message || "Something went wrong. Try again!",
-        })
-      );
+      .catch(this.handleError);
   };
 
   componentDidMount = () => {
@@ -53,71 +55,51 @@ class UserList extends Component {
 
   handleAddButton = () => {
     // get input data
-    axios
-      .post("/users", {
-        name: this.state.newName,
-        email: this.state.newEmail,
+    const { newName: name, newEmail: email } = this.state;
+    UserService.create({ name, email })
+      .then(() => {
+        // reset form
+        this.setState({ newName: "", newEmail: "" });
+        // sync the frontend with the backend
+        this.getUsers();
       })
-      .then(
-        () => {
-          this.setState({ newName: "", newEmail: "" });
-
-          // sync the frontend with the backend
-          this.getUsers();
-        },
-        (error) => {
-          this.setState({
-            error: error?.message || "Something went wrong. Try again!",
-          });
-        }
-      );
+      .catch(this.handleError);
   };
 
   handleDelete = (id) => {
-    console.log("delete");
-    axios
-      .delete(`users/${id}`)
+    UserService.delete(id)
       .then(() => {
         // remove the user on fronted
         this.setState({
           users: this.state.user.filter((user) => user.id !== id),
         });
       })
-      .catch((error) => {
-        this.setState({
-          error: error?.message || "Something went wrong. Try again!",
-        });
-      });
+      .catch(this.handleError);
   };
 
   handleEditButton = () => {
     // edit the user by id
-    axios
-      .put(`/users/${this.state.id}`, {
-        name: this.state.name,
-        email: this.state.email,
+    const {
+      name,
+      id /* Do not change the id of a document! */,
+      email,
+    } = this.state;
+    UserService.update({ email, name })
+      .then(() => {
+        // update the user on frontend
+        this.setState({
+          users: this.state.user.map((user) =>
+            user.id === this.state.id
+              ? { ...user, name: this.state.name, email: this.state.email }
+              : user
+          ),
+          // reset input fields
+          name: "",
+          id: "",
+          email: "",
+        });
       })
-      .then(
-        () => {
-          // update the user on frontend
-          this.setState({
-            users: this.state.user.map((user) =>
-              user.id === this.state.id
-                ? { ...user, name: this.state.name, email: this.state.email }
-                : user
-            ),
-            // reset input fields
-            name: "",
-            id: "",
-            email: "",
-          });
-        },
-        (error) => {
-          this.setState({
-            error: error?.message || "Something went wrong. Try again!",
-          });
-        }
-      );
+      .catch(this.handleError);
   };
 
   render() {
