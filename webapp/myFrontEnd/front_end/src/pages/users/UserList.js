@@ -8,73 +8,96 @@ class UserList extends Component {
     super();
     this.state = {
       users: [],
+      // store the error state through render-cycles
+      error: null,
+      // edit form states
+      name: "",
+      email: "",
+      id: "",
+      // add form state
+      newName: "",
+      newEmail: "",
     };
+    // bind the methods to get access in the render function
+    this.handleAddButton.bind(this);
+    this.handleEditButton.bind(this);
+    this.handleChange.bind(this);
   }
 
+  handleChange = (key, value) => {
+    // little generic hack
+    this.setState({ [key]: value });
+  };
+
+  getUsers = () => {
+    axios
+      .get("/users")
+      .then((response) => {
+        this.setState({
+          users: response.data,
+          error: null,
+        });
+      })
+      .catch((error) =>
+        this.setState({
+          error: error?.message || "Something went wrong. Try again!",
+        })
+      );
+  };
+
   componentDidMount = () => {
-    let currentComponent = this;
-    axios.get("/users").then((response) => {
-      console.log(response.data);
-      currentComponent.setState({
-        users: response.data,
-      });
-    });
+    // get the users initially
+    this.getUsers();
   };
 
   handleAddButton = () => {
-    //let currentComponent = this;
     // get input data
-    var name_value = document.getElementById("add_username_id").value;
-    var email_value = document.getElementById("add_email_id").value;
-
-    console.log(name_value);
-    console.log(email_value);
-
     axios
       .post("/users", {
-        name: name_value,
-        email: email_value,
+        name: this.state.newName,
+        email: this.state.newEmail,
       })
       .then(
         (response) => {
-          console.log(response);
-          // clear input fields
-          document.getElementById("add_username_id").value = "";
-          document.getElementById("add_email_id").value = "";
+          this.setState({ newName: "", newEmail: "" });
 
-          // reload page
-          window.location.reload(false);
+          // sync the frontend with the backend
+          this.getUsers();
         },
         (error) => {
-          console.log(error);
+          this.setState({
+            error: error?.message || "Something went wrong. Try again!",
+          });
         }
       );
   };
 
   handleEditButton = () => {
-    //let currentComponent = this;
-    // get input data
-    var id_value = document.getElementById("edit_userid_id").value;
-    var name_value = document.getElementById("edit_username_id").value;
-    var email_value = document.getElementById("edit_email_id").value;
-
+    // edit the user by id
     axios
-      .put(`/users/${id_value}`, {
-        name: name_value,
-        email: email_value,
+      .put(`/users/${this.state.id}`, {
+        name: this.state.name,
+        email: this.state.email,
       })
       .then(
         (response) => {
-          console.log(response);
-          // clear input fields
-          document.getElementById("edit_userid_id").value = "";
-          document.getElementById("edit_username_id").value = "";
-          document.getElementById("edit_email_id").value = "";
-
-          window.location.reload(false);
+          // update the user on frontend
+          this.setState({
+            users: this.state.user.map((user) =>
+              user.id === this.state.id
+                ? { ...user, name: this.state.name, email: this.state.email }
+                : user
+            ),
+            // reset input fields
+            name: "",
+            id: "",
+            email: "",
+          });
         },
         (error) => {
-          console.log(error);
+          this.setState({
+            error: error?.message || "Something went wrong. Try again!",
+          });
         }
       );
   };
@@ -83,17 +106,19 @@ class UserList extends Component {
     return (
       <div>
         <div id="userlist">
-          {this.state.users.map((user) => {
-            console.log(user.id);
-            return (
-              <UserData
-                key={user.id}
-                id={user.id}
-                name={user.name}
-                email={user.email}
-              />
-            );
-          })}
+          {this.state.users.map((user) => (
+            <UserData
+              key={user.id}
+              id={user.id}
+              name={user.name}
+              email={user.email}
+            />
+          ))}
+        </div>
+
+        {/* Error handling */}
+        <div>
+          <h3 className="error-text">{this.state.error}</h3>
         </div>
 
         <hr />
@@ -102,19 +127,20 @@ class UserList extends Component {
           <label>Name : </label>
           <input
             type="text"
-            id="add_username_id"
+            value={this.state.newName}
+            onChange={(e) => this.handleChange("newName", e.target.value)}
             className="inputbox"
-          ></input>{" "}
+          ></input>
           <br />
           <label>Email : </label>
           <input
             type="email"
-            id="add_email_id"
+            value={this.state.newEmail}
+            onChange={(e) => this.handleChange("newEmail", e.target.value)}
             className="inputbox"
-          ></input>{" "}
+          ></input>
           <br />
           <button onClick={this.handleAddButton} id="addbutton">
-            {" "}
             Add
           </button>
         </div>
@@ -125,23 +151,26 @@ class UserList extends Component {
           <label> ID of user : </label>
           <input
             type="text"
-            id="edit_userid_id"
+            value={this.state.id}
+            onChange={(e) => this.handleChange("id", e.target.value)}
             className="inputbox"
-          ></input>{" "}
+          ></input>
           <br />
           <label>Edited name : </label>
           <input
             type="text"
-            id="edit_username_id"
+            value={this.state.name}
+            onChange={(e) => this.handleChange("name", e.target.value)}
             className="inputbox"
-          ></input>{" "}
+          ></input>
           <br />
           <label>Edited Email : </label>
           <input
             type="email"
-            id="edit_email_id"
+            value={this.state.email}
+            onChange={(e) => this.handleChange("email", e.target.value)}
             className="inputbox"
-          ></input>{" "}
+          ></input>
           <br />
           <button onClick={this.handleEditButton}> Edit</button>
         </div>

@@ -31,3 +31,7 @@ body {
 .inputbox {
   margin: 2px;
 }
+
+.error-text {
+  color: red;
+}
