@@ -8,7 +8,7 @@ class UserList extends Component {
   constructor() {
     super();
     this.state = {
-      users: [{ id: "1", name: "arni", email: "tankoarni" }],
+      users: [],
       // store the error state through render-cycles
       error: null,
       // edit form states
