@@ -3,25 +3,30 @@ import axios from "axios";
 import "./UserById.css";
 
 class UserById extends Component {
-  constructor(user) {
+  constructor() {
     super();
     this.state = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
+      id: "",
+      name: "",
+      email: "",
+      error: null,
     };
   }
 
   componentDidMount = () => {
-    let currentComponent = this;
     axios
-      .get(`/users/${currentComponent.props.match.params.userId}`)
+      .get(`/users/${this.props.match.params.userId}`)
       .then((response) => {
         console.log(response.data);
-        currentComponent.setState({
+        this.setState({
           id: response.data.id,
           name: response.data.name,
           email: response.data.email,
+        });
+      })
+      .catch((error) => {
+        this.setState({
+          error: error?.message || "Something went wrong. Try again!",
         });
       });
   };
@@ -30,17 +35,24 @@ class UserById extends Component {
     return (
       <div id="user">
         <h3>Requested user: </h3>
-        <form>
-          <label type="text" id="userid" className="bordered">
-            {this.state.id}
-          </label>
-          <label type="text" id="username" className="bordered">
-            {this.state.name}
-          </label>
-          <label type="email" id="email" className="bordered">
-            {this.state.email}
-          </label>
-        </form>
+
+        {this.state.error ? (
+          <div>
+            <h4 className="error-text">{this.state.error}</h4>
+          </div>
+        ) : (
+          <form>
+            <label type="text" id="userid" className="bordered">
+              {this.state.id}
+            </label>
+            <label type="text" id="username" className="bordered">
+              {this.state.name}
+            </label>
+            <label type="email" id="email" className="bordered">
+              {this.state.email}
+            </label>
+          </form>
+        )}
       </div>
     );
   }
