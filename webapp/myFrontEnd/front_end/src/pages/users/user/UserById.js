@@ -41,7 +41,7 @@ class UserById extends Component {
             <h4 className="error-text">{this.state.error}</h4>
           </div>
         ) : (
-          <form>
+          <div>
             <label type="text" id="userid" className="bordered">
               {this.state.id}
             </label>
@@ -51,7 +51,7 @@ class UserById extends Component {
             <label type="email" id="email" className="bordered">
               {this.state.email}
             </label>
-          </form>
+          </div>
         )}
       </div>
     );

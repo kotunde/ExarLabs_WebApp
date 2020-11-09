@@ -22,6 +22,7 @@ class UserList extends Component {
     this.handleAddButton.bind(this);
     this.handleEditButton.bind(this);
     this.handleChange.bind(this);
+    this.handleDelete.bind(this);
   }
 
   handleChange = (key, value) => {
@@ -58,7 +59,7 @@ class UserList extends Component {
         email: this.state.newEmail,
       })
       .then(
-        (response) => {
+        () => {
           this.setState({ newName: "", newEmail: "" });
 
           // sync the frontend with the backend
@@ -72,6 +73,23 @@ class UserList extends Component {
       );
   };
 
+  handleDelete = (id) => {
+    console.log("delete");
+    axios
+      .delete(`users/${id}`)
+      .then(() => {
+        // remove the user on fronted
+        this.setState({
+          users: this.state.user.filter((user) => user.id !== id),
+        });
+      })
+      .catch((error) => {
+        this.setState({
+          error: error?.message || "Something went wrong. Try again!",
+        });
+      });
+  };
+
   handleEditButton = () => {
     // edit the user by id
     axios
@@ -80,7 +98,7 @@ class UserList extends Component {
         email: this.state.email,
       })
       .then(
-        (response) => {
+        () => {
           // update the user on frontend
           this.setState({
             users: this.state.user.map((user) =>
@@ -108,6 +126,7 @@ class UserList extends Component {
         <div id="userlist">
           {this.state.users.map((user) => (
             <UserData
+              handleDelete={() => this.handleDelete(user.id)}
               key={user.id}
               id={user.id}
               name={user.name}
